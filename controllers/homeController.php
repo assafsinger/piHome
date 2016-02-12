@@ -193,6 +193,16 @@ class homeController
         if($str[1]=="on"){ $lampset="1"; }elseif($str[1]=="off"){ $lampset="0"; }        
         $letter = $this->letter($device['letter']);        
         $co = $device['code'];
+        $codes = explode(";", $co);
+        
+        #if we have on and off codes
+        if (count($codes)==2){
+           if($lampset=="1"){
+             $co=$codes[0];
+           } elseif($lampset=="0"){
+             $co=$codes[1];
+           }
+        }
         // execute rcswitch-pi
         shell_exec('sudo /home/assafs/workspace/433Utils/RPi_utils/codesend '.$co.' ');
         // Set device status

@@ -208,7 +208,7 @@ class homeModel
         $stmt = $this->_con->prepare($sql);
         $stmt->bindParam(':croom',      $arr['room'], PDO::PARAM_STR); 
         $stmt->bindParam(':cdevice',    $arr['device_name'], PDO::PARAM_STR); 
-        $stmt->bindParam(':cletter',    $latter = 'A' , PDO::PARAM_STR); 
+        $stmt->bindParam(':cletter',    $arr['letter'] , PDO::PARAM_STR); 
         $stmt->bindParam(':ccode',      $code, PDO::PARAM_STR); 
         $stmt->bindParam(':csort',      $arr['sort'], PDO::PARAM_STR); 
         $stmt->bindParam(':deviceID',   $arr['deviceid'], PDO::PARAM_INT);          

@@ -173,13 +173,9 @@ function setDropDown(state,element) {
 function setLamp(deviceid,device,room,letter,code,sort){
     $('#e_device').val(device);
     $('#deviceid').val(deviceid);
+    $('input[name=code]').val(code);
     setDropDown(room,'e_room'); 
     setDropDown(letter,'e_letter');    
-    setDropDown(code.split('')[0],'e_c1'); 
-    setDropDown(code.split('')[1],'e_c2');
-    setDropDown(code.split('')[2],'e_c3');
-    setDropDown(code.split('')[3],'e_c4');
-    setDropDown(code.split('')[4],'e_c5');
     $('#e_sort').val(sort);
 }                                          
                                           

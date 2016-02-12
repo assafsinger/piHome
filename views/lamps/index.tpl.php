@@ -47,7 +47,7 @@
                 <label class="col-xs-12 col-sm-12 col-md-12 control-label"><?php echo LAMP_code;?></label>
                     
                  <div class="col-xs-12 col-sm-12 col-md-12">
-                    <input type="number" name="code" value="0" class="form-control"><br>
+                    <input type="text" name="code" value="0" class="form-control"><br>
               </div>
             </div>              
             <div class="form-group">
@@ -87,7 +87,16 @@
               <div class="col-xs-12 col-sm-12 col-md-12">
                 <input type="text" name="device_name" id="e_device" class="form-control"><br>
               </div>
-            </div>             
+            </div>       
+            <div class="form-group">
+              <label class="col-xs-12 col-sm-12 col-md-12 control-label">Device type</label>
+              <div class="col-xs-12 col-sm-12 col-md-12">
+                <select name="letter" id="e_letter" class="form-control">
+                        <option value='lamp'>lamp</option>
+                        <option value='waterHeater'>water heater</option>
+                </select><br>
+              </div>
+            </div>       
             <div class="form-group">
               <label class="col-xs-12 col-sm-12 col-md-12 control-label"><?php echo LAMP_room;?></label>                
               <div class="col-xs-12 col-sm-12 col-md-12">
@@ -101,7 +110,7 @@
             <div class="form-group">
                 <label class="col-xs-12 col-sm-12 col-md-12 control-label"><?php echo LAMP_code;?></label>
                 <div class="col-xs-12 col-sm-12 col-md-12">
-                   <input type="number" name="code" value="0" class="form-control"><br>
+                   <input type="code" name="code" value="0" class="form-control"><br>
                 </div> 
             </div>              
             <div class="form-group">
