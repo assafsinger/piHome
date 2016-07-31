@@ -39,7 +39,12 @@ class homeModel
         foreach($this->_con->query('SELECT * from '.PREFIX.'devices WHERE status = "1" ') as $row) { $lighton[] = $row; }       	
         return $lighton;
   }
-    
+   
+  public function getDeviceTimer()
+  {
+	foreach($this->_con->query('SELECT * from '.PREFIX.'devices WHERE status = "2" ') as $row) { $timers[] = $row; }
+	return $timers;
+  } 
     
   public function getWeather() 
   {    
@@ -124,7 +129,19 @@ class homeModel
         }        
   }
     
-    
+  public function setDeviceTimer($deviceid, $time)
+  {
+        $sql = "UPDATE ".PREFIX."devices SET timer_time = :deviceTimer WHERE id = :deviceID ";
+        $stmt = $this->_con->prepare($sql);
+        $stmt->bindParam(':deviceTimer', $time, PDO::PARAM_INT);
+        $stmt->bindParam(':deviceID', $deviceid, PDO::PARAM_INT);
+        if($stmt->execute()){
+            return 1;
+        }else{
+            return 0;
+        }
+  }   
+ 
   public function getAllUsers()
   {      
         foreach($this->_con->query('SELECT * from '.PREFIX.'admin ') as $row) { $user[] = $row; }      

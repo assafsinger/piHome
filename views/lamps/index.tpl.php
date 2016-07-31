@@ -22,6 +22,7 @@
             <div class="col-xs-12 col-sm-5 col-md-5">
                 <select name="letter" class="form-control">
                     <option value="lamp">lamp</option>
+                    <option value="ir">Infra red</option>
                     <option value="waterHeater">water heater</option>
                 </select>
                 <br>
@@ -93,6 +94,7 @@
               <div class="col-xs-12 col-sm-12 col-md-12">
                 <select name="letter" id="e_letter" class="form-control">
                         <option value='lamp'>lamp</option>
+                        <option value="ir">Infra red</option>
                         <option value='waterHeater'>water heater</option>
                 </select><br>
               </div>

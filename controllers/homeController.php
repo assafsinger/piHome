@@ -180,7 +180,60 @@ class homeController
     echo json_encode($array);    
   }  
     
-    
+  public function testAction(){
+       if($_GET['id']!=""){
+        $str = explode("_", $_GET['id']);
+        $lampid = $str[0];
+        require_once 'models/homeModel.php';
+        $model = new homeModel();
+   	$setlamp = $model->setDeviceTimer($lampid,123411);    
+	echo $setlamp; 
+       }
+
+  }
+
+  public function timerAction(){
+	$res="noAction";
+	require_once 'models/homeModel.php';
+        $model = new homeModel();
+        // get timers	
+	$devices = $model->getDeviceTimer();
+	$current_time = time();
+	foreach($devices as $device){
+		$diff_sec = $current_time - $device['timer_time'];
+	// 30 minutes	
+		if ($diff_sec>60*30){
+			for ($x = 0; $x <= 3; $x++) {
+                       		 $this->execCommand($device['letter'],$device['code'],"0");
+				 usleep(250000);
+			}
+			$res = $model->setDeviceStatus($device['id'],0);
+		}
+	}
+	echo $res;	
+  }
+  
+  private function execCommand($letter, $code, $command){
+	$co = $code;
+	$codes = explode(";", $co);
+
+        #if we have on and off codes
+        if (count($codes)==2){
+           if($command=="1" or $command=="2"){
+             $co=$codes[0];
+           } elseif($command=="0"){
+             $co=$codes[1];
+           }
+        }
+        if ($letter == "ir"){
+           //execute irsend
+          shell_exec('irsend SEND_ONCE '.$co.' ');
+        } else {
+          // execute rcswitch-pi
+          shell_exec('sudo /home/assafs/workspace/433Utils/RPi_utils/codesend '.$co.' ');
+        }
+  }
+ 
   public function setAction()
   {
     if($_GET['id']!=""){
@@ -190,24 +243,26 @@ class homeController
         $model = new homeModel();
         // get device data
         $device = $model->getDeviceById($lampid);
-        if($str[1]=="on"){ $lampset="1"; }elseif($str[1]=="off"){ $lampset="0"; }        
-        $letter = $this->letter($device['letter']);        
+        if($str[1]=="on"){ 
+		$lampset="1"; 
+	} elseif($str[1]=="off"){ 
+		$lampset="0"; 
+	} elseif($str[1]=="timer"){
+		$lampset="2";
+	}
+       
+
+        $letter = $device['letter'];        
         $co = $device['code'];
-        $codes = explode(";", $co);
         
-        #if we have on and off codes
-        if (count($codes)==2){
-           if($lampset=="1"){
-             $co=$codes[0];
-           } elseif($lampset=="0"){
-             $co=$codes[1];
-           }
-        }
-        // execute rcswitch-pi
-        shell_exec('sudo /home/assafs/workspace/433Utils/RPi_utils/codesend '.$co.' ');
-        // Set device status
-        $setlamp = $model->setDeviceStatus($lampid,$lampset);
-        echo $setlamp;        
+	$this->execCommand($letter, $co, $lampset);
+	// Set device status
+        $setlamps = $model->setDeviceStatus($lampid,$lampset);
+	$setlampt = 1;
+	if ($lampset=="2"){
+		$setlampt = $model->setDeviceTimer($lampid,time());
+	}
+        echo ($setlamps or $setlampt);        
     }
   }
     

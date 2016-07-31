@@ -21,7 +21,8 @@ define('DB_CHARSET', 'utf8');
 define('PREFIX', 'pi_');
 
 define('LANGUAGE', 'en');
-define('BASE', 'http://'.$_SERVER['HTTP_HOST'].'/');
+defined('BASE') or define('BASE', 'http://'.$_SERVER['HTTP_HOST'].'/');
+
 define('SERVER_PATH', '/home/www/');
 
 function name($name)

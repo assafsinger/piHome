@@ -1,4 +1,16 @@
 <?php
+$roomTempStr = file_get_contents('http://localhost/currentTemp.txt');
+preg_match('/Temp=([^\*]+)\*  Humidity=(.+)/', $roomTempStr, $matches);
+$roomTemp=-1;
+$roomHumidity="0%";
+
+if (count($matches) >=2){
+   $roomTemp=$matches[1];
+   $roomHumidity=$matches[2];
+   
+}
+
+
 if($settings['weather_option']=="c_kms"){
     $temp = $weather['temp_celsius'];
     $wind = $weather['wind_kms'];
@@ -50,6 +62,7 @@ if($settings['weather_option']=="c_kms"){
             <span class="pull-right visible-xs btn-ref"><a onclick="location.reload()" class="btn btn-default"><i class="fa fa-refresh"></i></a></span>    
               
           <a class="navbar-brand" href="<?php echo BASE;?>"><?php echo LOGO;?></a>
+<a class="navbar-brand" href="http://10.0.0.101/"><i class="fa  fa-cloud" style="color:blue"></i> <?php echo $roomTemp;?>°  <i class="fa fa-tint"> <?php echo " $roomHumidity";?></i></a>
         </div>
         <div class="navbar-collapse collapse">
           <ul class="nav navbar-nav navbar-right">
