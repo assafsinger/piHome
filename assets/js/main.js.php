@@ -200,13 +200,17 @@ function getdevices(){
         $.each( json, function( key, value ) 
         {                                
             if(value.sunset=="1"){ var sunset = ' <i class="fa fa-moon-o"></i>' }else{ var sunset = ''; }                                          
-            if(value.status=="1"){ var onbtn = "btn-primary"; var offbtn = "btn-default"; var lamp = "lighton"; }
+            if(value.status=="1" || value.status=="2"){ var onbtn = "btn-primary"; var offbtn = "btn-default"; var lamp = "lighton"; }
             else{ var onbtn = "btn-default"; var offbtn = "btn-primary"; var lamp = "lightoff"; }
+            if(value.status=="2"){var timerbtn="btn-primary"} else { var timerbtn="btn-default";}
             html = '<div class="row">';
             html = '<div class="row">';
             var icon = "fa-lightbulb-o"; 
             if(value.letter==="waterHeater"){
               icon = "fa-fire";
+            }
+            if(value.letter==="ir"){
+              icon = "fa-bolt";
             }
             html += '<div class="col-xs-1 col-sm-1 col-md-1"><i id="lamp_'+value.id+'" class="fa ' + icon + ' ' +lamp+'"></i></div>';
             html += '<div class="col-xs-6 col-sm-6 col-md-6"><div class="device">'+value.device+sunset+'</div><small>'+value.room+'</small></div>';
@@ -214,7 +218,11 @@ function getdevices(){
             html += '<span class="pull-right">';            
             html += "<a onclick='off(" + value.id + ")' id='btn2_" + value.id + "' class='btn "+offbtn+"'><?php echo BTN_OFF;?></a>";            
             html += '</span><span class="pull-right" style="margin-right:10px;">';            
-            html += "<a onclick='on(" + value.id + ")' id='btn1_" + value.id + "' class='btn "+onbtn+"'><?php echo BTN_ON;?></a>";            
+            html += "<a onclick='on(" + value.id + ")' id='btn1_" + value.id + "' class='btn "+onbtn+"'><?php echo BTN_ON;?></a>";
+            if (value.letter==="waterHeater" || value.letter==="ir"){
+                html += '</span><span class="pull-right" style="margin-right:10px;">';
+                html += "<a onclick='timer(" + value.id + ")' id='timer_" + value.id + "' class='btn "+timerbtn+"'><span class='glyphicon glyphicon-time' aria-hidden='true'></span></a>";            
+            }
             html += '</span></div></div>';
             $( "<li>" ).html( html ).appendTo( "#devices" );            
         });  
@@ -238,6 +246,7 @@ function on(value){ ac(value+"_on"); }
 
 function off(value){ ac(value+"_off"); }
 
+function timer(value){ ac(value+"_timer"); }
 
 function ac(letter){
 	var currentid = letter.split("_")[0];
@@ -245,6 +254,7 @@ function ac(letter){
 	var lamp = "#lamp_" + currentid;
 	var btn1 = "#btn1_" + currentid;
 	var btn2 = "#btn2_" + currentid;		
+	var timerBtn = "#timer_" + currentid;
     if(currentstatus == "off"){              
         $.get( "index.php?c=home&a=set&id="+letter, function( data ) {            
         var str = data.split("<!DOCTYPE html>").length - 1;
@@ -253,7 +263,8 @@ function ac(letter){
                 var newLampClass = $(lamp).attr("class").replace("lighton","lightoff");
                 $(lamp).attr("class", newLampClass);                
                 $(btn1).attr("class", "btn btn-default");
-                $(btn2).attr("class", "btn btn-primary");                
+                $(btn2).attr("class", "btn btn-primary");      
+		$(timerBtn).attr("class", "btn btn-default");          
             }
         }
         });
@@ -265,7 +276,12 @@ function ac(letter){
                     var newLampClass = $(lamp).attr("class").replace("lightoff","lighton");
                     $(lamp).attr("class", newLampClass);                
                     $(btn1).attr("class", "btn btn-primary");
-                    $(btn2).attr("class", "btn btn-default");                
+                    $(btn2).attr("class", "btn btn-default");
+		    if (currentstatus == "timer"){
+		       $(timerBtn).attr("class", "btn btn-primary");
+		    } else {
+    		       $(timerBtn).attr("class", "btn btn-default");
+		    }               
                 }
             }
         });

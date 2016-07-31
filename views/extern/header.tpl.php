@@ -23,7 +23,7 @@
   	<div class="navbar navbar-default navbar-fixed-top" role="navigation">
       <div class="container-fluid">
         <div class="navbar-header">          
-          <a class="navbar-brand" href="<?php echo BASE; ?>"><?php echo LOGO;?></a>
+          <a class="navbar-brand" href="<?php echo BASE; ?>"><?php echo LOGO;?><i class="fa  fa-cloud" style="color:blue"></i> 22.3°  <i class="fa fa-tint"> 61.2%</i></a>
         </div>
       </div>
     </div>      

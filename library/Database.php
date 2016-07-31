@@ -22,9 +22,14 @@ class Database {
 
     function con()
 	{
+	  try{
 	    $this->_con = new PDO('mysql:host='.DB_HOST.'; dbname='.DB_NAME, DB_USER, DB_PASS);  
 	    $this->_con->setAttribute( PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION );
 	    $this->_con->exec("SET CHARACTER SET ".DB_CHARSET);  //  return all sql requests as UTF-8  
+	  } catch (PDOException $e) {
+    	    echo 'Could not connect to database';
+          }
+
 		return $this->_con;
 	}
     
