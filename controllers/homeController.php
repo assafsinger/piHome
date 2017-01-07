@@ -226,11 +226,26 @@ class homeController
            }
         }
         if ($letter == "ir"){
-           //execute irsend
-          shell_exec('irsend SEND_ONCE '.$co.' ');
+            //execute irsend
+            shell_exec('irsend SEND_ONCE '.$co.' ');
         } else {
-          // execute rcswitch-pi
-          shell_exec('sudo /home/assafs/workspace/433Utils/RPi_utils/codesend '.$co.' ');
+            if ($letter == "irRemote"){
+              // Get cURL resource
+              $curl = curl_init();
+              // Set some options - we are passing in a useragent too here
+              curl_setopt_array($curl, array(
+                  CURLOPT_RETURNTRANSFER => 1,
+                  CURLOPT_URL => "http://10.0.0.7/?op=$codes[0]"
+              ));
+              // Send the request & save response to $resp
+              $resp = curl_exec($curl);
+              // Close request to clear up some resources
+              curl_close($curl);
+
+            } else {
+                // execute rcswitch-pi
+                shell_exec('sudo /home/assafs/workspace/433Utils/RPi_utils/codesend '.$co.' ');
+            }
         }
   }
  

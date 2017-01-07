@@ -209,7 +209,7 @@ function getdevices(){
             if(value.letter==="waterHeater"){
               icon = "fa-fire";
             }
-            if(value.letter==="ir"){
+            if(value.letter==="ir" || value.letter==="irRemote"){
               icon = "fa-bolt";
             }
             html += '<div class="col-xs-1 col-sm-1 col-md-1"><i id="lamp_'+value.id+'" class="fa ' + icon + ' ' +lamp+'"></i></div>';
@@ -219,7 +219,7 @@ function getdevices(){
             html += "<a onclick='off(" + value.id + ")' id='btn2_" + value.id + "' class='btn "+offbtn+"'><?php echo BTN_OFF;?></a>";            
             html += '</span><span class="pull-right" style="margin-right:10px;">';            
             html += "<a onclick='on(" + value.id + ")' id='btn1_" + value.id + "' class='btn "+onbtn+"'><?php echo BTN_ON;?></a>";
-            if (value.letter==="waterHeater" || value.letter==="ir"){
+            if (value.letter==="waterHeater" || value.letter==="ir" || value.letter==="irRemote"){
                 html += '</span><span class="pull-right" style="margin-right:10px;">';
                 html += "<a onclick='timer(" + value.id + ")' id='timer_" + value.id + "' class='btn "+timerbtn+"'><span class='glyphicon glyphicon-time' aria-hidden='true'></span></a>";            
             }
