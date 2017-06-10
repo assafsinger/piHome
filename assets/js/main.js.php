@@ -213,7 +213,7 @@ function getdevices(){
               icon = "fa-bolt";
             }
             html += '<div class="col-xs-1 col-sm-1 col-md-1"><i id="lamp_'+value.id+'" class="fa ' + icon + ' ' +lamp+'"></i></div>';
-            html += '<div class="col-xs-6 col-sm-6 col-md-6"><div class="device">'+value.device+sunset+'</div><small>'+value.room+'</small></div>';
+            html += '<div class="col-xs-6 col-sm-6 col-md-6"><div class="device">'+value.device+sunset+'</div><small>'+value.room + ((typeof value.tempData.temp !== 'undefined') ? ' | Temp:'+value.tempData.temp+'°, Humidity:'+value.tempData.hum +'%' : '') + '</small></div>';
             html += '<div class="col-xs-5 col-sm-5 col-md-5">';
             html += '<span class="pull-right">';            
             html += "<a onclick='off(" + value.id + ")' id='btn2_" + value.id + "' class='btn "+offbtn+"'><?php echo BTN_OFF;?></a>";            
