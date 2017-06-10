@@ -174,7 +174,7 @@
                             <i id="lamp_<?php echo $lampe['id'];?>" class="fa <?php if(strcmp($lampe['letter'],'waterHeater')==0){ echo 'fa-fire'; } else {echo 'fa-lightbulb-o'; }?> fa-fire lightoff"></i>
                         </div>
                         <div class="col-xs-6 col-sm-4 col-md-4">
-                            <div class="device"><?php echo $lampe['id'];?> - <?php echo $lampe['device'];?></div>
+                            <div class="device"><?php echo $lampe['id'];?> - <?php echo $lampe['device'];?>1</div>
                             <small><?php echo $lampe['room'];?> - <?php echo $lampe['letter'];?> <?php echo $lampe['code'];?></small>
                         </div>                           
                         <div class="col-xs-6 col-sm-7 col-md-7">

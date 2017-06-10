@@ -172,13 +172,35 @@ class homeController
         $arr['device']  = $lamp['device'];
         $arr['status']  = $lamp['status'];
         $arr['sunset']  = $lamp['sunset'];
-        $arr['letter']  = $lamp['letter'];        
+        $arr['letter']  = $lamp['letter'];
+	$arr['tempData'] = $this->getTempData($lamp['remoteAddress']);        
         $room = $model->getRoomNameById($lamp['room_id']); 
         $arr['room'] = $room;        
         $array[] = $arr;         
     }    
     echo json_encode($array);    
-  }  
+  } 
+
+  public function getTempData($remoteAddress){
+     	if (!isset($remoteAddress) || trim($remoteAddress)===''){
+		return "no Address";
+	}
+	$curl = curl_init();
+	// Set some options - we are passing in a useragent too here
+	curl_setopt_array($curl, array(
+    		CURLOPT_RETURNTRANSFER => 1,
+    		CURLOPT_URL => $remoteAddress . '?op=getTemp',
+		CURLOPT_TIMEOUT => 1
+	));
+	// Send the request & save response to $resp
+	$resp = curl_exec($curl);
+	// Close request to clear up some resources
+	curl_close($curl);	
+	if (!isset($resp) || trim($resp)===''){
+                return "timeout or other error";
+        }
+	return json_decode($resp);
+  } 
     
   public function testAction(){
        if($_GET['id']!=""){
@@ -204,7 +226,7 @@ class homeController
 	// 30 minutes	
 		if ($diff_sec>60*30){
 			for ($x = 0; $x <= 3; $x++) {
-                       		 $this->execCommand($device['letter'],$device['code'],"0");
+                       		 $this->execCommand($device['letter'],$device['code'],"0", $device["remoteAddress"]);
 				 usleep(250000);
 			}
 			$res = $model->setDeviceStatus($device['id'],0);
@@ -213,7 +235,7 @@ class homeController
 	echo $res;	
   }
   
-  private function execCommand($letter, $code, $command){
+  private function execCommand($letter, $code, $command,$remoteAddress){
 	$co = $code;
 	$codes = explode(";", $co);
 
@@ -226,11 +248,26 @@ class homeController
            }
         }
         if ($letter == "ir"){
-           //execute irsend
-          shell_exec('irsend SEND_ONCE '.$co.' ');
+            //execute irsend
+            shell_exec('irsend SEND_ONCE '.$co.' ');
         } else {
-          // execute rcswitch-pi
-          shell_exec('sudo /home/assafs/workspace/433Utils/RPi_utils/codesend '.$co.' ');
+            if ($letter == "irRemote"){
+              // Get cURL resource
+              $curl = curl_init();
+              // Set some options - we are passing in a useragent too here
+              curl_setopt_array($curl, array(
+                  CURLOPT_RETURNTRANSFER => 1,
+                  CURLOPT_URL => $remoteAddress."/?op=$co"
+              ));
+              // Send the request & save response to $resp
+              $resp = curl_exec($curl);
+              // Close request to clear up some resources
+              curl_close($curl);
+
+            } else {
+                // execute rcswitch-pi
+                shell_exec('sudo /home/assafs/workspace/433Utils/RPi_utils/codesend '.$co.' ');
+            }
         }
   }
  
@@ -255,7 +292,7 @@ class homeController
         $letter = $device['letter'];        
         $co = $device['code'];
         
-	$this->execCommand($letter, $co, $lampset);
+	$this->execCommand($letter, $co, $lampset,$device["remoteAddress"]);
 	// Set device status
         $setlamps = $model->setDeviceStatus($lampid,$lampset);
 	$setlampt = 1;
