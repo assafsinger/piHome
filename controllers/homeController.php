@@ -220,12 +220,14 @@ class homeController
     $model = new homeModel();
     // get timers
 	$devices = $model->getDeviceTimer();
-    if (time()>$device['timer_time']){
-	    for ($x = 0; $x <= 3; $x++) {
-            $this->execCommand($device['letter'],$device['code'],"0", $device["remoteAddress"]);
-		    usleep(250000);
-		}
-	    $res = $model->setDeviceStatus($device['id'],0);
+    foreach($devices as $device){
+        if (time()>$device['timer_time']){
+	        for ($x = 0; $x <= 3; $x++) {
+                $this->execCommand($device['letter'],$device['code'],"0", $device["remoteAddress"]);
+		        usleep(250000);
+		    }
+	        $res = $model->setDeviceStatus($device['id'],0);
+	    }
 	}
 	echo $res;	
   }
@@ -297,7 +299,7 @@ class homeController
 	        $timerEnd = time()+45*60;
 	    }
 	    // we do not allow timers of more than 1 hour
-	    $timer = min($timer, time() + 3600);
+	    $timerEnd = min($timerEnd, time() + 3600);
 		$setlampt = $model->setDeviceTimer($lampid, $timerEnd);
 	}
         echo ($setlamps or $setlampt);        
