@@ -223,8 +223,8 @@ class homeController
 	$current_time = time();
 	foreach($devices as $device){
 		$diff_sec = $current_time - $device['timer_time'];
-	// 30 minutes	
-		if ($diff_sec>60*30){
+	// 45 minutes	
+		if ($diff_sec>60*45){
 			for ($x = 0; $x <= 3; $x++) {
                        		 $this->execCommand($device['letter'],$device['code'],"0", $device["remoteAddress"]);
 				 usleep(250000);
