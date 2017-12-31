@@ -217,20 +217,15 @@ class homeController
   public function timerAction(){
 	$res="noAction";
 	require_once 'models/homeModel.php';
-        $model = new homeModel();
-        // get timers	
+    $model = new homeModel();
+    // get timers
 	$devices = $model->getDeviceTimer();
-	$current_time = time();
-	foreach($devices as $device){
-		$diff_sec = $current_time - $device['timer_time'];
-	// 45 minutes	
-		if ($diff_sec>60*45){
-			for ($x = 0; $x <= 3; $x++) {
-                       		 $this->execCommand($device['letter'],$device['code'],"0", $device["remoteAddress"]);
-				 usleep(250000);
-			}
-			$res = $model->setDeviceStatus($device['id'],0);
+    if (time()>$device['timer_time']){
+	    for ($x = 0; $x <= 3; $x++) {
+            $this->execCommand($device['letter'],$device['code'],"0", $device["remoteAddress"]);
+		    usleep(250000);
 		}
+	    $res = $model->setDeviceStatus($device['id'],0);
 	}
 	echo $res;	
   }
@@ -271,7 +266,7 @@ class homeController
         }
   }
  
-  public function setAction()
+  public function setAction($timerEnd = 0)
   {
     if($_GET['id']!=""){
         $str = explode("_", $_GET['id']);   
@@ -297,13 +292,18 @@ class homeController
         $setlamps = $model->setDeviceStatus($lampid,$lampset);
 	$setlampt = 1;
 	if ($lampset=="2"){
-		$setlampt = $model->setDeviceTimer($lampid,time());
+	    //default timer is 45 minutes;
+	    if ($timerEnd<=0){
+	        $timerEnd = time()+45*60;
+	    }
+	    // we do not allow timers of more than 1 hour
+	    $timer = min($timer, time() + 3600);
+		$setlampt = $model->setDeviceTimer($lampid, $timerEnd);
 	}
         echo ($setlamps or $setlampt);        
     }
   }
-    
-    
+
   public function alloffAction()
   {    
         require_once 'models/homeModel.php';
@@ -350,7 +350,6 @@ class homeController
         }
   }
 
-    
     
   public function delroomAction()
   { 
