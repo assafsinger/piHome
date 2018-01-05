@@ -114,8 +114,8 @@ if (count($results->getItems()) == 0) {
     if (time()>$start && time()<$end){
         $device = getIdForName($event->getSummary());
         $id = $device["id"];
-        $home_controller->setActionInternal($id,"on", $end);
-        printf("Device On "%s". Device ID:%s. Will be turned off in %d seconds. \n", $event->getSummary(), $device["id"], $end-time());
+        $home_controller->setActionInternal($id,"timer", $end);
+        printf("Device On:%s. Device ID:%s. Will be turned off in %d seconds. \n", $event->getSummary(), $device["id"], $end-time());
     }
   }
 }
