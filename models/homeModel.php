@@ -7,7 +7,7 @@ class homeModel
     
   public function __construct() 
   {   
-		require_once 'library/Database.php';
+		require_once __DIR__  . '/../' .  'library/Database.php';
         $this->_con = new Database();
         $this->_con = $this->_con->con();
   }

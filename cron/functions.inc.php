@@ -80,6 +80,19 @@ function getCodeById($id)
 	return $c;
 }
 
+function getIdForName($name)
+{
+	dbconnect();
+	$sql_getcode       = "SELECT * FROM  ".PREFIX."devices  WHERE device = '".$name."' ";
+	$query_getcode      = mysql_query($sql_getcode);
+	while($device  = mysql_fetch_assoc($query_getcode)){
+		$c["letter"] = $device['letter'];
+		$c["code"] = $device['code'];
+		$c["id"] = $device['id'];
+	}
+	return $c;
+}
+
 
 
 function allOff()

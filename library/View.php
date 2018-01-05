@@ -6,9 +6,9 @@ class View {
   private $_vars = array();
 
   public function __construct() {
-    require_once 'library/Login.php'; 
+    require_once __DIR__  . '/../' .  'library/Login.php'; 
     $this->_login = new Login(); 
-    require_once 'config/controller.inc.php';
+    require_once __DIR__  . '/../' .  'config/controller.inc.php';
     $this->_cconfig = new ControllerConfig();    
   }
 
@@ -22,7 +22,7 @@ class View {
     extract($this->_vars);
     ob_start();     
     if($this->_login->is_login()==true or $cc['login']==false){          
-        require_once 'models/homeModel.php';
+        require_once __DIR__  . '/../' .  'models/homeModel.php';
         $intern   = new homeModel();
         $rooms    = $intern->getAllRooms();
         $weather  = $intern->getWeather();        

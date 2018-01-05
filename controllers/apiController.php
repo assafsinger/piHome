@@ -7,7 +7,7 @@ class apiController
 
   public function __construct() 
   {
-    require_once 'models/homeModel.php'; 
+    require_once __DIR__  . '/../' .  'models/homeModel.php'; 
     $this->_model = new homeModel();  
   }
 
