@@ -1,4 +1,4 @@
-<?
+<?php
 /*
  * PiHome v2.0
  * http://pihome.harkemedia.de/

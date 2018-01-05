@@ -295,8 +295,6 @@ public function setActionInternal($lampid, $state, $timerEnd = 0)
  	    if ($timerEnd<=0){
  	        $timerEnd = time()+45*60;
  	    }
- 	    // we do not allow timers of more than 1 hour
- 	    $timerEnd = min($timerEnd, time() + 3600);
  		$setlampt = $model->setDeviceTimer($lampid, $timerEnd);
  	}
          echo ($setlamps or $setlampt);
