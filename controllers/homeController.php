@@ -6,7 +6,7 @@ class homeController
 
   public function __construct() 
   {
-    require_once 'library/View.php';
+    require_once __DIR__  . '/../' . 'library/View.php';
     $this->_view = new View();    
   }
 
@@ -14,7 +14,7 @@ class homeController
   public function indexAction() 
   {
     
-    require_once 'models/homeModel.php';    
+    require_once __DIR__  . '/../' . 'models/homeModel.php';
     $this->_view->title = TITEL_HOME;    
     $this->_view->display('home/index.tpl.php');
   }  
@@ -22,7 +22,7 @@ class homeController
     
   public function roomAction()
   {
-    require_once 'models/homeModel.php';
+    require_once __DIR__  . '/../' .  'models/homeModel.php';
     $model = new homeModel();
     $room_name = $model->getRoomNameById($_GET['id']);      
     $lampsByRoomId = $model->getLampsByRoomId($_GET['id']);         
@@ -35,7 +35,7 @@ class homeController
     
   public function lampsAction()
   {
-    require_once 'models/homeModel.php';
+    require_once __DIR__  . '/../' .  'models/homeModel.php';
     $model = new homeModel();    
     $this->_view->title = TITEL_LAMPS; 
       
@@ -71,7 +71,7 @@ class homeController
     
   public function roomsAction()
   {
-    require_once 'models/homeModel.php';
+    require_once __DIR__  . '/../' .  'models/homeModel.php';
     $model = new homeModel();
         
     if($_POST['send']=="addroom"){ 
@@ -90,7 +90,7 @@ class homeController
     
   public function userAction()
   {
-    require_once 'models/homeModel.php';
+    require_once __DIR__  . '/../' .  'models/homeModel.php';
     $model = new homeModel(); 
     if($_POST['send']=="adduser"){            
         # make password
@@ -115,8 +115,8 @@ class homeController
     
   public function settingsAction()
   {
-    require_once 'library/Country.php';
-    require_once 'models/homeModel.php';             
+    require_once __DIR__  . '/../' .  'library/Country.php';
+    require_once __DIR__  . '/../' .  'models/homeModel.php';             
     $model = new homeModel();
     if($_POST['send']=="save"){ $model->updateSettings($_POST); }   
     $room_name = $model->getRoomNameById($_GET['id']);      
@@ -133,7 +133,7 @@ class homeController
     
   public function pwchangeAction()
   {
-    require_once 'models/homeModel.php';
+    require_once __DIR__  . '/../' .  'models/homeModel.php';
     $model = new homeModel(); 
     $user = $model->getUser($_SESSION[user_id]);
     $err = "";
@@ -162,7 +162,7 @@ class homeController
         
   public function  getlightsAction() 
   {    
-    require_once 'models/homeModel.php';
+    require_once __DIR__  . '/../' .  'models/homeModel.php';
     $model = new homeModel();
     $lights = $model->getActivDevices();    
     foreach($lights as $lamp)
@@ -206,7 +206,7 @@ class homeController
        if($_GET['id']!=""){
         $str = explode("_", $_GET['id']);
         $lampid = $str[0];
-        require_once 'models/homeModel.php';
+        require_once __DIR__  . '/../' .  'models/homeModel.php';
         $model = new homeModel();
    	$setlamp = $model->setDeviceTimer($lampid,123411);    
 	echo $setlamp; 
@@ -216,21 +216,18 @@ class homeController
 
   public function timerAction(){
 	$res="noAction";
-	require_once 'models/homeModel.php';
-        $model = new homeModel();
-        // get timers	
+	require_once __DIR__  . '/../' .  'models/homeModel.php';
+    $model = new homeModel();
+    // get timers
 	$devices = $model->getDeviceTimer();
-	$current_time = time();
-	foreach($devices as $device){
-		$diff_sec = $current_time - $device['timer_time'];
-	// 45 minutes	
-		if ($diff_sec>60*45){
-			for ($x = 0; $x <= 3; $x++) {
-                       		 $this->execCommand($device['letter'],$device['code'],"0", $device["remoteAddress"]);
-				 usleep(250000);
-			}
-			$res = $model->setDeviceStatus($device['id'],0);
-		}
+    foreach($devices as $device){
+        if (time()>$device['timer_time']){
+	        for ($x = 0; $x <= 3; $x++) {
+                $this->execCommand($device['letter'],$device['code'],"0", $device["remoteAddress"]);
+		        usleep(250000);
+		    }
+	        $res = $model->setDeviceStatus($device['id'],0);
+	    }
 	}
 	echo $res;	
   }
@@ -270,43 +267,51 @@ class homeController
             }
         }
   }
- 
-  public function setAction()
-  {
-    if($_GET['id']!=""){
-        $str = explode("_", $_GET['id']);   
-        $lampid = $str[0];
-        require_once 'models/homeModel.php';
-        $model = new homeModel();
-        // get device data
-        $device = $model->getDeviceById($lampid);
-        if($str[1]=="on"){ 
-		$lampset="1"; 
-	} elseif($str[1]=="off"){ 
-		$lampset="0"; 
-	} elseif($str[1]=="timer"){
-		$lampset="2";
-	}
-       
 
-        $letter = $device['letter'];        
-        $co = $device['code'];
-        
-	$this->execCommand($letter, $co, $lampset,$device["remoteAddress"]);
-	// Set device status
-        $setlamps = $model->setDeviceStatus($lampid,$lampset);
-	$setlampt = 1;
-	if ($lampset=="2"){
-		$setlampt = $model->setDeviceTimer($lampid,time());
-	}
-        echo ($setlamps or $setlampt);        
+public function setActionInternal($lampid, $state, $timerEnd = 0)
+   {
+         require_once __DIR__  . '/../' .  'models/homeModel.php';
+         $model = new homeModel();
+         // get device data
+         $device = $model->getDeviceById($lampid);
+         if($state=="on"){
+ 		$lampset="1";
+ 	} elseif($state=="off"){
+ 		$lampset="0";
+ 	} elseif($state=="timer"){
+ 		$lampset="2";
+ 	}
+
+
+         $letter = $device['letter'];
+         $co = $device['code'];
+
+ 	$this->execCommand($letter, $co, $lampset,$device["remoteAddress"]);
+ 	// Set device status
+         $setlamps = $model->setDeviceStatus($lampid,$lampset);
+ 	$setlampt = 1;
+ 	if ($lampset=="2"){
+ 	    //default timer is 45 minutes;
+ 	    if ($timerEnd<=0){
+ 	        $timerEnd = time()+45*60;
+ 	    }
+ 		$setlampt = $model->setDeviceTimer($lampid, $timerEnd);
+ 	}
+         echo ($setlamps or $setlampt);
+   }
+
+  public function setAction(){
+    if($_GET['id']!=""){
+        $str = explode("_", $_GET['id']);
+        $lampid = $str[0];
+        $state = $str[1];
+        $this->setActionInternal($lampid, $state);
     }
   }
-    
-    
+
   public function alloffAction()
   {    
-        require_once 'models/homeModel.php';
+        require_once __DIR__  . '/../' .  'models/homeModel.php';
         $model = new homeModel();
         $lights = $model->getDeviceOn();        
         foreach($lights as $light){
@@ -324,7 +329,7 @@ class homeController
   public function deldeviceAction()
   { 
         if($_GET['id']!=""){
-            require_once 'models/homeModel.php';
+            require_once __DIR__  . '/../' .  'models/homeModel.php';
             $model = new homeModel();
             echo $model->delDevice($_GET['id']);
         }
@@ -334,7 +339,7 @@ class homeController
   public function updatesunsetAction()
   {         
         if($_GET['id']!=""){
-            require_once 'models/homeModel.php';
+            require_once __DIR__  . '/../' .  'models/homeModel.php';
             $model = new homeModel();
             echo $model->updateDeviceSunset($_GET['id'], $_GET['set']);
         }
@@ -344,18 +349,17 @@ class homeController
   public function updateaktivAction()
   { 
         if($_GET['id']!=""){
-            require_once 'models/homeModel.php';
+            require_once __DIR__  . '/../' .  'models/homeModel.php';
             $model = new homeModel();
             echo $model->updateDeviceAktiv($_GET['id'], $_GET['set']);
         }
   }
 
     
-    
   public function delroomAction()
   { 
         if($_GET['id']!=""){
-            require_once 'models/homeModel.php';
+            require_once __DIR__  . '/../' .  'models/homeModel.php';
             $model = new homeModel();
             echo $model->delRoom($_GET['id']);
         }
@@ -365,7 +369,7 @@ class homeController
   public function deluserAction()
   { 
         if($_GET['id']!=""){
-            require_once 'models/homeModel.php';
+            require_once __DIR__  . '/../' .  'models/homeModel.php';
             $model = new homeModel();
             echo $model->delUser($_GET['id']);
         }

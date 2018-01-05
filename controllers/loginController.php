@@ -12,9 +12,9 @@ class LoginController {
   private $password;
 
   public function __construct() {
-    require_once 'library/View.php';
+    require_once __DIR__  . '/../' .  'library/View.php';
     $this->_view = new View();
-    require_once 'library/Database.php';
+    require_once __DIR__  . '/../' .  'library/Database.php';
 	$this->_con = new Database();
 	$this->_con = $this->_con->con();	    
   }
@@ -68,7 +68,7 @@ class LoginController {
 
   public function getweatherAction()
   {        
-        require_once 'models/homeModel.php';
+        require_once __DIR__  . '/../' .  'models/homeModel.php';
         $model = new homeModel();
         $settings = $model->settings();                
         // Get Weather Data per openweathermap api

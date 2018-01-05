@@ -1,4 +1,4 @@
-<?
+<?php
 /*
  * PiHome v2.0
  * http://pihome.harkemedia.de/
@@ -76,6 +76,19 @@ function getCodeById($id)
 	while($code  = mysql_fetch_assoc($query_getcode)){
 		$c["letter"] = $code['letter'];
 		$c["code"] = $code['code'];
+	}
+	return $c;
+}
+
+function getIdForName($name)
+{
+	dbconnect();
+	$sql_getcode       = "SELECT * FROM  ".PREFIX."devices  WHERE device = '".$name."' ";
+	$query_getcode      = mysql_query($sql_getcode);
+	while($device  = mysql_fetch_assoc($query_getcode)){
+		$c["letter"] = $device['letter'];
+		$c["code"] = $device['code'];
+		$c["id"] = $device['id'];
 	}
 	return $c;
 }
