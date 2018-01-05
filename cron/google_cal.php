@@ -6,6 +6,11 @@ first run - should run php google_cal.php
 save credentials to /home/assafs/.credentials/calendar-php.json
 
 https://developers.google.com/google-apps/calendar/quickstart/php
+
+add to crontab:
+
+*/1 * * * * sudo /bin/bash /var/www/html/cron/timer.sh
+*/1 * * * * sudo php /var/www/html/cron/google_cal.php
 */
 
 require_once '/var/www/html/config/dbconfig.inc.php';
