@@ -89,6 +89,8 @@ function getIdForName($name)
 		$c["letter"] = $device['letter'];
 		$c["code"] = $device['code'];
 		$c["id"] = $device['id'];
+		$c["status"] = $device['status'];
+
 	}
 	return $c;
 }
